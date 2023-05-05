@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import {
   BarChart,
   Bar,
@@ -8,14 +8,13 @@ import {
   Tooltip,
   Legend
 } from 'recharts';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import { MOUNTHS } from '../constants';
+import { Context } from "../../App";
 
 import './Chart.css'
 import {
-  API_URL,
   FILTER_TITLE,
   FILTER_ALL_PRODUCTS,
   FILTER_PRODUCT_1,
@@ -25,6 +24,8 @@ import {
 function Chart() {
 
   const navigate = useNavigate();
+  const context = useContext(Context);
+  
   const [data, setData] = useState();
   const [filter, setFilter] = useState(FILTER_ALL_PRODUCTS);
 
@@ -32,8 +33,8 @@ function Chart() {
   const goToDetailPage = (id, mounth) => navigate(`details/${id}/${mounth}`);
 
   useEffect(() => {
-    axios.get(API_URL).then((response) => {
-      const dataWithMounth = response.data.map((item) => {
+    if(context){
+      const dataWithMounth = context.map((item) => {
         const date = item['date'];
         if(date){
           const dateArray = date.split('/');
@@ -73,10 +74,9 @@ function Chart() {
         return yearArray;
       }, []);
       const result = yearData.slice(1)
-      console.log(result);
       setData(result);
-    });
-  }, []);
+    }
+  }, [context]);
 
   return (
     <>

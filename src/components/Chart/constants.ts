@@ -1,5 +1,3 @@
-export const API_URL = 'http://localhost:3001/products';
-
 export const FILTER_TITLE = 'Фильтр по типу продукции';
 export const FILTER_ALL_PRODUCTS = 'Все продукты';
 export const FILTER_PRODUCT_1 = 'Продукт 1';

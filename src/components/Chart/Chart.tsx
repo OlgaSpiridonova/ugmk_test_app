@@ -11,10 +11,12 @@ import {
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+import { MOUNTHS } from '../constants';
+
 import './Chart.css'
 import {
   API_URL,
-  MOUNTHS,
+  FILTER_TITLE,
   FILTER_ALL_PRODUCTS,
   FILTER_PRODUCT_1,
   FILTER_PRODUCT_2,
@@ -79,7 +81,7 @@ function Chart() {
   return (
     <>
       <div className="filter">
-        Product type
+        {FILTER_TITLE}
         <select onChange={handleSelect}>
           <option>{FILTER_ALL_PRODUCTS}</option>
           <option>{FILTER_PRODUCT_1}</option>
@@ -104,8 +106,8 @@ function Chart() {
         <Legend />
         {(filter === FILTER_ALL_PRODUCTS) && (
           <>
-            <Bar dataKey="factory1" fill="#8884d8" onClick={(e) => goToDetailPage(1, e.mounth_number)} role="presentation" />
-            <Bar dataKey="factory2" fill="#82ca9d" onClick={(e) => goToDetailPage(2, e.mounth_number)} role="presentation" />
+            <Bar dataKey="factory1" fill="#8884d8" onClick={(e) => goToDetailPage(1, e.mounth_number)} />
+            <Bar dataKey="factory2" fill="#82ca9d" onClick={(e) => goToDetailPage(2, e.mounth_number)} />
           </>
         )}
         {(filter === FILTER_PRODUCT_1) && (

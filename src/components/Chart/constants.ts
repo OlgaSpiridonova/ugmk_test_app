@@ -1,20 +1,6 @@
 export const API_URL = 'http://localhost:3001/products';
 
-export const MOUNTHS:Array<string> = [
-  'Янв',
-  'Фев',
-  'Мар',
-  'Апр',
-  'Май',
-  'Июн',
-  'Июл',
-  'Авг',
-  'Сен',
-  'Окт',
-  'Ноя',
-  'Дек',
-];
-
-export const FILTER_ALL_PRODUCTS = 'All products';
-export const FILTER_PRODUCT_1 = 'Product 1';
-export const FILTER_PRODUCT_2 = 'Product 2';
+export const FILTER_TITLE = 'Фильтр по типу продукции';
+export const FILTER_ALL_PRODUCTS = 'Все продукты';
+export const FILTER_PRODUCT_1 = 'Продукт 1';
+export const FILTER_PRODUCT_2 = 'Продукт 2';

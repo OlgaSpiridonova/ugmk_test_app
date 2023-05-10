@@ -2,12 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import Chart from './components/Chart/Chart';
 import DetailPage from './components/DetailPage/DetailPage';
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
-} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import './App.css'
 
@@ -23,14 +18,16 @@ function App() {
     });
   }, []);
 
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <>
-        <Route path="/" element={<Chart />} />
-        <Route path="details/:factory_id/:mounth" element={<DetailPage />} />
-      </>
-    ),
-  );
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Chart />,
+    },
+    {
+      path: "details/:factory_id/:mounth",
+      element: <DetailPage />,
+    },
+  ]);
   return (
     <Context.Provider value={data}>
       <RouterProvider router={router} />

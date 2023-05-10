@@ -10,118 +10,126 @@ import {
 } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 
-import { MOUNTHS } from '../constants';
+import { MOUNTHS, COLORS } from '../../constants/constants';
 import { Context } from "../../App";
+import {
+  filterTitle,
+  allProducts,
+  product1,
+  product2,
+  factory1,
+  factory2,
+} from "../../locale/ru.json";
 
 import './Chart.css'
-import {
-  FILTER_TITLE,
-  FILTER_ALL_PRODUCTS,
-  FILTER_PRODUCT_1,
-  FILTER_PRODUCT_2,
-} from './constants';
 
 function Chart() {
-
   const navigate = useNavigate();
-  const context = useContext(Context);
-  
+  const handleSelect = (e: any) => setFilter(e.target.value);
+  const goToDetailPage = (id: number, mounth: number) => navigate(`details/${id}/${mounth}`);
+  const context: any = useContext(Context);
   const [data, setData] = useState();
-  const [filter, setFilter] = useState(FILTER_ALL_PRODUCTS);
+  const [filter, setFilter] = useState(allProducts);
+  const filterData = [
+    allProducts,
+    product1,
+    product2,
+  ];
+  const factoriesData = [
+    {name: "factory1", id: "1"},
+    {name: "factory2", id: "2"},
+  ];
 
-  const handleSelect = (e) => setFilter(e.target.value);
-  const goToDetailPage = (id, mounth) => navigate(`details/${id}/${mounth}`);
-
-  useEffect(() => {
-    if(context){
-      const dataWithMounth = context.map((item) => {
-        const date = item['date'];
+  const prepareChartData = (data: any) => {
+    if(data){
+      const dataWithMounth = data.map((item: any) => {
+        const { date } = item;
         if(date){
-          const dateArray = date.split('/');
-          const mounth = dateArray[1];
+          const mounth = date.split('/')[1];
           return {
             ...item,
-            mounth: mounth,
+            mounth,
           };
         }
         return item;
       });
 
-      const yearData = dataWithMounth.reduce((yearArray, item) => {
-        const mounth = item['mounth'];
-        yearArray[mounth] = yearArray[mounth] || [];
-        yearArray[mounth]['factory1'] = yearArray[mounth]['factory1'] || 0;
-        yearArray[mounth]['factory2'] = yearArray[mounth]['factory2'] || 0;
-        yearArray[mounth]['f1p1'] = yearArray[mounth]['f1p1'] || 0;
-        yearArray[mounth]['f1p2'] = yearArray[mounth]['f1p2'] || 0;
-        yearArray[mounth]['f2p1'] = yearArray[mounth]['f2p1'] || 0;
-        yearArray[mounth]['f2p2'] = yearArray[mounth]['f2p2'] || 0;
-        yearArray[mounth]['mounth'] = MOUNTHS[item['mounth']-1];
-        yearArray[mounth]['mounth_number'] = mounth;
+      const yearData = dataWithMounth.reduce((yearArray: Array<any>, item: any) => {
+        const { mounth } = item;
+        const mounthIndex = Number(mounth)-1;
+
+        yearArray[mounthIndex] = yearArray[mounthIndex] || {};
+        yearArray[mounthIndex]['factory1'] = yearArray[mounthIndex]['factory1'] || 0;
+        yearArray[mounthIndex]['factory2'] = yearArray[mounthIndex]['factory2'] || 0;
+        yearArray[mounthIndex]['f1p1'] = yearArray[mounthIndex]['f1p1'] || 0;
+        yearArray[mounthIndex]['f1p2'] = yearArray[mounthIndex]['f1p2'] || 0;
+        yearArray[mounthIndex]['f2p1'] = yearArray[mounthIndex]['f2p1'] || 0;
+        yearArray[mounthIndex]['f2p2'] = yearArray[mounthIndex]['f2p2'] || 0;
+        yearArray[mounthIndex]['mounth'] = item['mounth'];
+        yearArray[mounthIndex]['mounthName'] = MOUNTHS[item['mounth']-1];
 
         if(item.factory_id === 1){
-          yearArray[mounth]['factory1'] += item['product1']/1000;
-          yearArray[mounth]['factory1'] += item['product2']/1000;
-          yearArray[mounth]['f1p1'] += item['product1']/1000;
-          yearArray[mounth]['f1p2'] += item['product2']/1000;
+          yearArray[mounthIndex]['factory1'] += Math.round(item['product1']/1000);
+          yearArray[mounthIndex]['factory1'] += Math.round(item['product2']/1000);
+          yearArray[mounthIndex]['f1p1'] += Math.round(item['product1']/1000);
+          yearArray[mounthIndex]['f1p2'] += Math.round(item['product2']/1000);
         }
         if(item.factory_id === 2){
-          yearArray[mounth]['factory2'] += item['product1']/1000;
-          yearArray[mounth]['factory2'] += item['product2']/1000;
-          yearArray[mounth]['f2p1'] += item['product1']/1000;
-          yearArray[mounth]['f2p2'] += item['product2']/1000;
+          yearArray[mounthIndex]['factory2'] += Math.round(item['product1']/1000);
+          yearArray[mounthIndex]['factory2'] += Math.round(item['product2']/1000);
+          yearArray[mounthIndex]['f2p1'] += Math.round(item['product1']/1000);
+          yearArray[mounthIndex]['f2p2'] += Math.round(item['product2']/1000);
         }
+        
         return yearArray;
-      }, []);
-      const result = yearData.slice(1)
-      setData(result);
+      }, [{factory1: 0, factory2: 0, f1p1: 0, f1p2: 0, f2p1: 0, f2p2: 0,}]);
+      
+      setData(yearData);
     }
-  }, [context]);
+  }
+
+  useEffect(() => prepareChartData(context), [context]);
 
   return (
     <>
       <div className="filter">
-        {FILTER_TITLE}
+        {filterTitle}
         <select onChange={handleSelect}>
-          <option>{FILTER_ALL_PRODUCTS}</option>
-          <option>{FILTER_PRODUCT_1}</option>
-          <option>{FILTER_PRODUCT_2}</option>
+          {filterData.map((item) => <option key={item}>{item}</option>)}
         </select>
       </div>
       <BarChart
         width={1000}
         height={700}
         data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="mounth" />
+        <XAxis dataKey="mounthName" />
         <YAxis />
         <Tooltip />
         <Legend />
-        {(filter === FILTER_ALL_PRODUCTS) && (
-          <>
-            <Bar dataKey="factory1" fill="#8884d8" onClick={(e) => goToDetailPage(1, e.mounth_number)} />
-            <Bar dataKey="factory2" fill="#82ca9d" onClick={(e) => goToDetailPage(2, e.mounth_number)} />
-          </>
-        )}
-        {(filter === FILTER_PRODUCT_1) && (
-          <>
-            <Bar dataKey="f1p1" fill="#8884d8" onClick={(e) => goToDetailPage(1, e.mounth_number)} />
-            <Bar dataKey="f2p1" fill="#82ca9d" onClick={(e) => goToDetailPage(2, e.mounth_number)} />
-          </>
-        )}
-        {(filter === FILTER_PRODUCT_2) && (
-          <>
-            <Bar dataKey="f1p2" fill="#8884d8" onClick={(e) => goToDetailPage(1, e.mounth_number)} />
-            <Bar dataKey="f2p2" fill="#82ca9d" onClick={(e) => goToDetailPage(2, e.mounth_number)} />
-          </>
-        )}
+        <Bar
+          dataKey={filter === product1 
+            ? "f1p1" 
+            : filter === product2 
+            ? "f1p2"
+            : "factory1"
+          }
+          fill={COLORS[0]}
+          name={factory1}
+          onClick={(e) => goToDetailPage(1, e.mounth)}
+        />
+        <Bar
+          dataKey={filter === product1 
+            ? "f2p1" 
+            : filter === product2 
+            ? "f2p2"
+            : "factory2"
+          }
+          fill={COLORS[1]}
+          name={factory2}
+          onClick={(e) => goToDetailPage(2, e.mounth)}
+        />
       </BarChart>
     </>
   )

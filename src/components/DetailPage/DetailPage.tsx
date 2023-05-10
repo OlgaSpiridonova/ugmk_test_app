@@ -7,75 +7,64 @@ import {
 } from 'recharts';
 import { useParams } from 'react-router-dom';
 
-import { MOUNTHS, COLORS } from '../constants';
+import { MOUNTHS, COLORS } from '../../constants/constants';
 import { Context } from "../../App";
+import {
+  product1,
+  product2,
+  detailTitle,
+  detailTitleFor,
+} from "../../locale/ru.json";
 
 function DetailPage() {
-  const { factory_id, mounth } = useParams();
-  const context = useContext(Context);
+  const { factory_id: factoryId, mounth } = useParams();
+  const context: any = useContext(Context);
   const [data, setData] = useState([]);
   const mounthIndex = Number(mounth)-1;
 
-  const testData = [
-    {
-      "name": "Product 1",
-      "value": 400
-    },
-    {
-      "name": "Product 2",
-      "value": 300
-    },
-  ]
-
-  useEffect(() => {
-    if(context){
-      const dataWithMounth = context.map((item) => {
-        const date = item['date'];
+  const prepareDetailData = (data: any) => {
+    if(data){
+      const dataWithMounth = data.map((item: any) => {
+        const { date } = item;
         if(date){
-          const dateArray = date.split('/');
-          const mounth = dateArray[1];
+          const mounth = date.split('/')[1];
           return {
             ...item,
-            mounth: mounth,
+            mounth,
           };
         }
         return item;
       });
 
-      const filterData = dataWithMounth.filter((item) => item.mounth === mounth && item.factory_id === Number(factory_id));
-      console.log(filterData);
+      const filterData = dataWithMounth.filter((item: any) => item.mounth === mounth && item.factory_id === Number(factoryId));
 
-      const mounthData = filterData.reduce((resArray, item) => {
-        resArray['product1'] = resArray['product1'] || {};
-        resArray['product2'] = resArray['product2'] || {};
-        resArray['product1']['value'] = resArray['product1']['value'] || 0;
-        resArray['product2']['value'] = resArray['product2']['value'] || 0;
-        resArray['product1']['name'] = resArray['product1']['name'] || '';
-        resArray['product2']['name'] = resArray['product2']['name'] || '';
+      const mounthData = filterData.reduce((resArray: Array<any>, item: any) => {
+        resArray[0] = resArray[0] || {};
+        resArray[1] = resArray[1] || {};
+        resArray[0]['value'] = resArray[0]['value'] || 0;
+        resArray[1]['value'] = resArray[1]['value'] || 0;
 
-        resArray['product1']['value'] += item['product1']/1000;
-        resArray['product2']['value'] += item['product2']/1000;
-        resArray['product1']['name'] = 'product1';
-        resArray['product2']['name'] = 'product2';
+        resArray[0]['value'] += Math.round(item['product1']/1000);
+        resArray[1]['value'] += Math.round(item['product2']/1000);
 
         return resArray;
       }, []);
-      console.log(mounthData);
       
       setData(mounthData);
     }
-  }, [context]);
+  }
 
+  useEffect(() => prepareDetailData(context), [context]);
 
   return (
     <>
-      <h3>{`Статистика по продукции фабрики ${factory_id} за ${MOUNTHS[mounthIndex]}`}</h3>
-      <PieChart width={730} height={250}>
-        <Pie data={data} dataKey="value" cx="50%" cy="50%" outerRadius={80} label>
+      <h1>{`${detailTitle}${factoryId === "1" ? "А" : "Б"}${detailTitleFor}${MOUNTHS[mounthIndex]}`}</h1>
+      <PieChart width={1000} height={500}>
+        <Pie data={data} dataKey="value" cx="50%" cy="50%" outerRadius={150} label>
           {
             <>
-              <Cell key={'cell-product1'} fill={COLORS[0]}/>
-              <Cell key={'cell-product2'} fill={COLORS[1]}/>
+              <Cell key={'cell-product1'} name={product1} fill={COLORS[0]}/>
+              <Cell key={'cell-product2'} name={product2} fill={COLORS[1]}/>
             </>
           }
         </Pie>

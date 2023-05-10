@@ -1,0 +1,10 @@
+{
+  "filterTitle" : "Фильтр по типу продукции" ,
+  "allProducts" : "Все продукты" ,
+  "product1": "Продукт 1" ,
+  "product2": "Продукт 2" ,
+  "factory1": "Фабрика А" ,
+  "factory2": "Фабрика Б" ,
+  "detailTitle" : "Статистика по продукции фабрики " ,
+  "detailTitleFor" : " за "
+}

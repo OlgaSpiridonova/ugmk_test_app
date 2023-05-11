@@ -1,13 +1,12 @@
-import { createContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Chart from './components/Chart/Chart';
-import DetailPage from './components/DetailPage/DetailPage';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import './App.css'
+import { Chart } from './components/Chart';
+import { DetailPage } from './components/DetailPage';
+import { RowDataContext } from './store/context';
 
-export const Context = createContext(null);
-export const SetAppStateContext = createContext({});
+import './App.css'
 
 function App() {
   const [data, setData] = useState(null);
@@ -29,9 +28,9 @@ function App() {
     },
   ]);
   return (
-    <Context.Provider value={data}>
+    <RowDataContext.Provider value={data}>
       <RouterProvider router={router} />
-    </Context.Provider>
+    </RowDataContext.Provider>
   );
 }
 

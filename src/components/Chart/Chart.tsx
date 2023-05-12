@@ -22,6 +22,7 @@ import {
 } from "../../locale/ru.json";
 
 import { serializeChartData } from './serializeChartData'
+import { RowData } from './interface'
 
 import './Chart.css'
 
@@ -31,14 +32,18 @@ const filterData = [
   {name: product2, value: "product2"},
 ];
 
+interface IEvent {
+  target: { value: string };
+}
+
 function Chart() {
   const navigate = useNavigate();
   const goToDetailPage = (id: number, mounth: number) => navigate(`details/${id}/${mounth}`);
-  const rowData: any = useContext(RowDataContext);
+  const rowData: RowData | null = useContext(RowDataContext);
   const [data, setData] = useState();
   const filterValue = localStorage.getItem('filter') ? String(localStorage.getItem('filter')) : "all";
   const [filter, setFilter] = useState(filterValue);
-  const handleSelect = (e: any) => {
+  const handleSelect = (e: IEvent) => {
     setFilter(e.target.value);
     localStorage.setItem('filter', e.target.value);
   };

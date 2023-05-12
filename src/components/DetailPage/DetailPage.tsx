@@ -17,14 +17,15 @@ import {
 } from "../../locale/ru.json";
 
 import { serializeDetailData } from './serializeDetailData'
+import { RowData } from './interface'
 
 function DetailPage() {
   const { factory_id: factoryId, mounth } = useParams();
-  const rowData: any = useContext(RowDataContext);
+  const rowData: RowData = useContext(RowDataContext);
   const [data, setData] = useState([]);
   const mounthIndex = Number(mounth)-1;
 
-  useEffect(() => serializeDetailData(rowData, setData, mounth, factoryId), [rowData]);
+  useEffect(() => serializeDetailData(rowData, setData, Number(mounth), factoryId), [rowData]);
 
   return (
     <>

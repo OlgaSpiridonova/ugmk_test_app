@@ -1,11 +1,12 @@
 import { MOUNTHS, factories } from '../../constants/constants';
+import { RowData, YearData } from './interface'
 
-export const serializeChartData = (data: { date: string | undefined }[], setData: CallableFunction) => {
+export const serializeChartData = (data: RowData, setData: CallableFunction) => {
   if(data){
     const dataWithMounth = data.map((item) => {
       const { date } = item;
       if(date){
-        const mounth = date.split('/')[1];
+        const mounth = Number(date.split('/')[1]);
         return {
           ...item,
           mounth,
@@ -15,11 +16,11 @@ export const serializeChartData = (data: { date: string | undefined }[], setData
     });
     console.log(dataWithMounth);
     
-    const initYearData = MOUNTHS.map(() => {
+    const initYearData: YearData = MOUNTHS.map(() => {
       return {factory1: 0, factory2: 0, f1p1: 0, f1p2: 0, f2p1: 0, f2p2: 0,};
     })
-    const yearData = dataWithMounth.reduce((yearArray: Array<any>, item: any) => {
-      const mounthIndex = Number(item.mounth)-1;
+    const yearData = dataWithMounth.reduce((yearArray, item) => {
+      const mounthIndex = item.mounth-1;
       yearArray[mounthIndex] = yearArray[mounthIndex] || {};
       yearArray[mounthIndex]['mounth'] = item['mounth'];
       yearArray[mounthIndex]['mounthName'] = MOUNTHS[item['mounth']-1];

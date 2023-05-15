@@ -1,6 +1,6 @@
-import { RowData, MounthData } from './interface'
+import { IMounthData, Operation } from './interface'
 
-export const serializeDetailData = (data: RowData, setData: CallableFunction, mounth: number | undefined, factoryId: string | undefined) => {
+export const serializeDetailData: Operation = (data, setData, mounth, factoryId) => {
   if(data){
     const dataWithMounth = data.map((item) => {
       const { date } = item;
@@ -19,9 +19,9 @@ export const serializeDetailData = (data: RowData, setData: CallableFunction, mo
       {name: "product2", value: 0}
     ];
 
-    const filterData: RowData = dataWithMounth.filter((item) => item.mounth === mounth && item.factory_id === Number(factoryId));
+    const filterData = dataWithMounth.filter((item) => item.mounth === mounth && item.factory_id === factoryId);
 
-    const mounthData = filterData.reduce((resArray: MounthData, item) => {
+    const mounthData = filterData.reduce((resArray: IMounthData[], item) => {
       initMounthArray.forEach((product, index) => {
         resArray[index]['value'] += Math.round(item[product.name]/1000);
       })

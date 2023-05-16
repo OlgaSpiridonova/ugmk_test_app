@@ -7,7 +7,7 @@ import {
 } from 'recharts';
 import { useParams } from 'react-router-dom';
 
-import { MOUNTHS, COLORS } from '../../constants/constants';
+import { MOUNTHS, PIE_COLORS } from '../../constants/constants';
 import { RowDataContext } from "../../store/context";
 import {
   product1,
@@ -34,8 +34,8 @@ function DetailPage() {
         <Pie data={data} dataKey="value" cx="50%" cy="50%" outerRadius={150} label>
           {
             <>
-              <Cell key={'product1'} name={product1} fill={COLORS[0]}/>
-              <Cell key={'product2'} name={product2} fill={COLORS[1]}/>
+              <Cell key={'product1'} name={product1} fill={PIE_COLORS[0]}/>
+              <Cell key={'product2'} name={product2} fill={PIE_COLORS[1]}/>
             </>
           }
         </Pie>
